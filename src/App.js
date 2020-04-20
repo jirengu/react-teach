@@ -1,25 +1,31 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import './App.css';
 
+/*
+const Columns = () => (
+  <>
+    <td>小明</td>
+    <td>24</td>
+  </>
+)
+*/
 
-const Button = (props) => (
-  <div className="button" style={{ background: props.theme }}>
-    button
-  </div>
+
+const Columns = () => (
+  <Fragment>
+    <td>小明</td>
+    <td>24</td>
+  </Fragment>
 )
 
-const ThemeButton = (props) => (
-  <div>
-    <Button theme={props.theme} />
-  </div>
+
+const App = (props) => (
+  <table>
+    <tr>
+      <Columns />
+    </tr>
+  </table>
 )
 
-const Toolbar = (props) => (
-  <div>
-    <ThemeButton theme={props.theme} />
-  </div>
-)
 
-const App = (props) => <Toolbar theme="blue" />;
-
-export default App;
+export default App
