@@ -1,21 +1,41 @@
 import React, { Component, Suspense } from 'react';
 import './App.css';
 
-const Add = React.lazy(() => import('./Add'))
-const Substract = React.lazy(() => import('./Substract'))
-console.log('app3')
+const ThemeContext = React.createContext()
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <Suspense fallback={<div>Loading...</div>}>
-          <Add></Add>
-          <Substract></Substract>
-        </Suspense>
-      </div>
-    )
-  }
+const Button = (props) => {
+  return (
+    <ThemeContext.Consumer>
+      {val => (
+        <div
+          className="button"
+          style={{ background: val.bgColor, borderColor: val.borderColor }}
+        >
+          button
+        </div>
+      )}
+    </ThemeContext.Consumer>
+  )
 }
 
-export default App;
+const ThemeButton = (props) => (
+  <div>
+    <Button />
+  </div>
+)
+
+const Toolbar = (props) => (
+  <div>
+    <ThemeButton />
+  </div>
+)
+
+const theme = { bgColor: "red", borderColor: "pink" }
+
+const App = (props) => (
+  <ThemeContext.Provider value={theme}>
+    <Toolbar />
+  </ThemeContext.Provider>
+)
+
+export default App

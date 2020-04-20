@@ -1,15 +1,25 @@
 import React from 'react';
 import './App.css';
-import {add, subtract} from './math'
 
-function App() {
-  return (
-    <div className="App">
-      <h1>3 + 5 + 7 = {add(3, 5, 7)}</h1>
-      <h1>3 - 5 = {subtract(3, 5)}</h1>
-      
-    </div>
-  );
-}
+
+const Button = (props) => (
+  <div className="button" style={{ background: props.theme }}>
+    button
+  </div>
+)
+
+const ThemeButton = (props) => (
+  <div>
+    <Button theme={props.theme} />
+  </div>
+)
+
+const Toolbar = (props) => (
+  <div>
+    <ThemeButton theme={props.theme} />
+  </div>
+)
+
+const App = (props) => <Toolbar theme="blue" />;
 
 export default App;
