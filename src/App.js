@@ -1,38 +1,81 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { Component } from 'react'
+import './App.css'
 
-function First(props) {
-  return <fieldset>
-    <legend>first name </legend>
-    <input value={props.value} onChange={props.onChange}/>
-  </fieldset>
-}
-
-function Last(props) {
-  return <fieldset>
-    <legend>last name </legend>
-    <input value={props.value} onChange={props.onChange}/>
-  </fieldset>
-}
-
-class App extends Component {
+class ErrorBoundary extends React.Component {
   constructor(props) {
-    super(props)
-    this.state =  {
-      first: 'af',
-      last: 'b'
-    }    
+    super(props);
+    this.state = { error: null, errorInfo: null }
+  }
+  
+  componentDidCatch(error, errorInfo) {
+    // Catch errors in any components below and re-render with error message
+    this.setState({
+      error: error,
+      errorInfo: errorInfo
+    })
+    console.log(error)
+    console.log(errorInfo)
   }
   
   render() {
-    return (
-      <div>
-        <First value={this.state.first} onChange={(e)=>{this.setState({first: e.target.value})}}/>
-        <Last value={this.state.last} onChange={(e)=>{this.setState({last: e.target.value})}} />
-        <p>full nane is: {this.state.first + ' ' + this.state.last}</p>
-      </div>
-    )
+    if (this.state.errorInfo) {
+      // Error path
+      return (
+        <div>
+          <h2>Something went wrong.</h2>
+          <details style={{ whiteSpace: 'pre-wrap' }}>
+            {this.state.error && this.state.error.toString()}
+            <br />
+            {this.state.errorInfo.componentStack}
+          </details>
+        </div>
+      );
+    }
+ 
+    return this.props.children
+  }  
+}
+
+class BuggyCounter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { counter: 0 };
+    this.handleClick = this.handleClick.bind(this);
+  }
+  
+  handleClick() {
+    this.setState(({counter}) => ({
+      counter: counter + 1
+    }))
+  }
+  
+  render() {
+    if (this.state.counter === 5) {
+      throw new Error('I crashed!')
+    }
+    return <h1 onClick={this.handleClick}>{this.state.counter}</h1>;
   }
 }
+
+function App() {
+  return (
+    <div>
+      <p>
+        点击计数器
+      </p>
+      <hr />
+      <ErrorBoundary>
+        <p>两个计数器使用同一个Boundary</p>
+        <BuggyCounter />
+        <BuggyCounter />
+      </ErrorBoundary>
+      <hr />
+      <p>两个计数器使用不同的Boundary</p>
+      <ErrorBoundary><BuggyCounter /></ErrorBoundary>
+      <ErrorBoundary><BuggyCounter /></ErrorBoundary>
+    </div>
+  )
+}
+
 
 export default App
